@@ -1,0 +1,54 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    container_name: aplicacao-exemplo-postgres
+    networks:
+      - overlay
+    environment:
+      POSTGRES_DB: curta-payment-charge-api
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - '5437:5432'
+    volumes:
+      - postgresdb:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo
+    container_name: aplicacao-exemplo-mongo
+    hostname: aplicacao-exemplo-mongo
+    networks:
+      - overlay
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongodb:/var/lib/mongo/data
+
+  project:
+    container_name: aplicacao-exemplo
+    image: aplicacao-exemplo:1.0.0
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - overlay
+    depends_on:
+      - mongo
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  mongodb:
+  postgresdb:
+
+networks: 
+  overlay: 
+    driver: bridge
