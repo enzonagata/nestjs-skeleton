@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 @Injectable()
 export class TracingMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
+    console.log(req.originalUrl);
     if (req.body) {
       const uuid = req.body.requestId ?? randomUUID();
       req.body.requestId = uuid;
@@ -19,6 +20,7 @@ export class TracingMiddleware implements NestMiddleware {
       res.locals.body = body;
       return oldJson.call(res, body);
     };
+    console.log(req.body);
     next();
   }
 }

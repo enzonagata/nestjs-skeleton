@@ -17,6 +17,7 @@ export enum RequestMethod {
 @Injectable()
 export class HttpUtils {
   constructor(private readonly httpService: HttpService) {}
+
   async request(
     type: RequestMethod,
     url: string,

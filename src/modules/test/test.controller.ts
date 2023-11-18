@@ -20,13 +20,12 @@ export class TestController {
 
   @Get()
   async test(@Body() payload) {
-    console.log(payload);
-    // const re = await this.httpUtils.request(
-    //   RequestMethod.GET,
-    //   'http://localhost:3000/api/v1/test/aaa',
-    //   payload,
-    // );
-    return 'Hello World';
+    const re = await this.httpUtils.request(
+      RequestMethod.GET,
+      'http://localhost:3000/api/v1/test/aaa',
+      payload,
+    );
+    return re;
   }
 
   @Get('aaa')
