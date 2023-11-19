@@ -2,11 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  Head,
-  Header,
-  Headers,
-  Req,
-  Res,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { TestService } from './test.service';
 import { HttpUtils, RequestMethod } from 'src/common/utils/http.utils';
@@ -20,6 +17,10 @@ export class TestController {
 
   @Get()
   async test(@Body() payload) {
+    // throw new HttpException(
+    //   `Ocorreu um erro`,
+    //   HttpStatus.INTERNAL_SERVER_ERROR,
+    // );
     const re = await this.httpUtils.request(
       RequestMethod.GET,
       'http://localhost:3000/api/v1/test/aaa',
@@ -32,7 +33,7 @@ export class TestController {
   async testa(@Body() payload) {
     const re = await this.httpUtils.request(
       RequestMethod.GET,
-      'http://localhost:3000/api/v1/',
+      'http://localhost:3002/api/v1/',
       payload,
     );
     return re;

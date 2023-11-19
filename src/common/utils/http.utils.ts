@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { ExecutionContext } from '@nestjs/common';
 
 export const X_REQUEST_ID_HEADER = 'X-Request-ID';
 export const X_RESPONSE_ID_HEADER = 'X-Response-ID';

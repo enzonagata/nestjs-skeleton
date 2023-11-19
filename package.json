@@ -1,10 +1,9 @@
 {
-  "name": "negativava-curta",
+  "name": "nestjs-skeleton",
   "version": "0.0.1",
   "description": "",
   "author": "",
-  "private": true,
-  "license": "PRAVALER",
+  "private": false,
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
