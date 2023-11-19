@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { TestService } from './test.service';
-import { HttpUtils, RequestMethod } from 'src/common/utils/http.utils';
+import { HttpUtils, RequestMethod } from 'src/common/helpers/http.helper';
 
 @Controller('test')
 export class TestController {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TestService } from './test.service';
 import { TestController } from './test.controller';
 import { HttpModule } from '@nestjs/axios';
-import { HttpUtils } from 'src/common/utils/http.utils';
+import { HttpUtils } from 'src/common/helpers/http.helper';
 
 @Module({
   imports: [HttpModule],
