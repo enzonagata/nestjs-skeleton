@@ -1,9 +1,9 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import validationExceptionFactory from './common/exception/factories/validation.exception.factory';
+import validationExceptionFactory from './common/filters/factories/validation.exception.factory';
 //import * as bodyParser from 'body-parser';
-import { AllExceptionsFilter } from './common/exception/all-exception.filter';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as momentTimezone from 'moment-timezone';

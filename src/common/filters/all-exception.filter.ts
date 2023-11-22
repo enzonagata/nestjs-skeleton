@@ -21,7 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).json({
       url: request.url,
       body: request.body,
-      error_message: message,
+      error: message,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 
 export default (errors: ValidationError[]): any => {
@@ -6,7 +6,6 @@ export default (errors: ValidationError[]): any => {
   throw new BadRequestException({
     errorType: 'ClassValidation',
     validationResult,
-    statusCode: HttpStatus.BAD_REQUEST,
   });
 };
 
