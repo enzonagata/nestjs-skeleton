@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cyber-integration
+  description: |
+    Esse sistema é responsável por fazer a integração do nosso sistema legado com o sistema de cobrança Cyber Financial
+  
+  tags: [nodejs, webapi, express, yarn]
+spec:
+  type: service
+  owner: squad-credito-cobranca
+  lifecycle: production

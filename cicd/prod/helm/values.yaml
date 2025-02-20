@@ -1,0 +1,35 @@
+chartVersion: 2.0.0
+
+cloud_resources:
+  pubsub:
+    enabled: false    
+  storage:
+    enabled: 
+kubernetes_resources:
+  redis: 
+    enabled: 
+  postgresql:
+    enabled: false
+  mysql:
+    enabled: false
+  mongodb:
+    enabled: false
+service:
+  type: internal
+  exposed: true
+  port: 80
+compute:
+  scaling:
+    min_replicas: 1
+    max_replicas: 3
+    cpu_utilization: 80
+    mem_utilization: 80
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 450m
+      memory: 200Mi
+variables: {}
+secrets: {}
