@@ -19,7 +19,18 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "schema:sync": "npx typeorm-ts-node-commonjs schema:sync",
+    "typeorm:cache": "npx typeorm-ts-node-commonjs cache:clear",
+    "schema:drop": "npx typeorm-ts-node-commonjs -d ./src/common/config/data-source.ts",
+    "migration:create": "typeorm migration:create ./src/migrations/schema-update",
+    "migration:generate_only": "npx typeorm-ts-node-commonjs migration:generate ./src/migrations/schema-update -d ./src/common/config/data-source.ts",
+    "migration:generate": "npm run migration:generate_only && npm run lint",
+    "migration:show": "npx typeorm-ts-node-commonjs migration:show -d ./src/common/config/data-source.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d ./src/common/config/data-source.ts",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./src/common/config/data-source.ts",
+    "migration:revert-all": "node --eval \"const fs = require('fs'); const { execSync } = require('child_process'); let size = fs.readdirSync('src/migrations').length; i = 1; while (i++ <= size) { execSync('npm run migration:revert'); }\""
   },
   "dependencies": {
     "@google-cloud/pubsub": "^4.10.0",

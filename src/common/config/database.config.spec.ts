@@ -1,4 +1,4 @@
-import { DataBaseConfig } from './database.config';
+import { DataBaseConfig } from '../../config/database.config';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from '@nestjs/common';
 
