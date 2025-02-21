@@ -1,28 +1,18 @@
-import { Logger, MiddlewareConsumer, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DataBaseConfig, configDataBase } from './config/database.config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TracingMiddleware } from './common/middleware/tracing.middleware';
-import { TestModule } from './modules/test/test.module';
-
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PubSubHelper } from './common/helpers/pubsub.helper';
 @Module({
-  controllers: [AppController],
   imports: [
+    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TestModule,
-    // TypeOrmModule.forRootAsync({
-    //   useClass: DataBaseConfig,
-    //   inject: [DataBaseConfig],
-    // }),
-    // MongooseModule.forRoot(configDataBase.getConnectionMongo()),
   ],
+  controllers: [AppController],
+  providers: [AppService, PubSubHelper],
+  exports: [PubSubHelper],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TracingMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

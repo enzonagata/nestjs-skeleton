@@ -1,53 +1,52 @@
-# <Nome da Aplicação>
-## Qual o objetivo da aplicação?
+## *Setup* Local
 
-[Descreva o objetivo da sua aplicação]
+Pré requisitos:
 
-## Quem é a equipe responsável?
-### <Nome da equipe responsável>
-- :mailbox_with_no_mail: email@exemple.com.br
+- Certifique-se de que você tenha as tecnologias abaixo instalados localmente na sua máquina:
+  - Git;
+  - Docker;
+  - Make;
+  - npm (para eventual instalação de novas dependências no projeto).
 
-## Quais os pré-requisitos para rodar a aplicação?
+Comece fazendo o *clone* do repositório usando o Git:
 
-> Escreva aqui os pré-requisitos para a aplicação funcionar
+   ```
+   
+   ```
 
-### Docker
-- Renomeie os *container_name* no arquivo **docker-compose.yml**;
-- Executar o seguinte comando na raiz do projeto:
-    ```shell
-    docker-compose up --build 
-    ```
-- Após o build completo provavelmente aparecerá falha na conexão com o banco de dados, sendo assim é necessário executar o comando
-(use como host o IP atribuido no Gateway):
-    ```shell
-    docker inspect <nome-da-aplicacao>
-    ```
-- Acesse pela seguinte URL:
-[http://localhost:3000/api/v1](http://localhost:3000/api/v1) 
-    - Obs.: A URL vai depender da versão da API configurada em suas rotas nas controllers
+### Criando o *container* da API
 
-### NPM
-- Primeiramente faça as instalações necessárias através do comando:
-    ```shell
-    npm install
-    ```
-- Agora execute o seguinte comando na raiz do projeto:
-    ```shell
-    npm run start:dev
-    ```
-- Acesse pela seguinte URL:
-[http://localhost:3000/api](http://localhost:3000/api) 
+1. Faça o *build* do *container* com o seguinte comando (pode ser necessário que você adicione o prefixo `sudo`, dependendo da forma como o Docker foi instalado):
 
-## Como executar testes?
+   ```
+   make build
+   ```
 
-- Execute os testes com o seguinte comando:
-  ```bash
-  # unit tests
-  npm run test
+2. Suba o *container* com o seguinte comando:
 
-  # e2e tests
-  npm run test:e2e
+   ```
+   make run
+   ```
 
-  # test coverage
-  npm run test:cov
-  ```
+3. Como exemplo, acesse a rota de *healthcheck* da API através do seguinte endereço: <http://localhost:3000/v1/healthcheck>
+
+### Executando os testes com geração do relatório de cobertura
+
+1. Faça o *build* do *container* com o seguinte comando (pode ser necessário que você adicione o prefixo `sudo`, dependendo da forma como o Docker foi instalado):
+
+   ```
+   make build-test
+   ```
+
+2. Suba o *container* para executar os testes com o seguinte comando:
+
+   ```
+   make run-test
+   ```
+
+3. Acesse o relatório de cobertura de testes abrindo o arquivo `coverage/lcov-report/index.html` no navegador.
+
+### Observações
+
+- o serviço é recompilado automaticamente a cada alteração no código. Graças a essa funcionalidade que já vem com o NestJS, e ao volume que é criado localmente, é possível editar o código na máquina *host* e ter as alterações refletindo dentro do *container* logo em seguida;
+- também há um volume para o diretório `coverage`, possibilitando que o relatório seja acessado fora do *container* após a execução dos testes com o comando do item 2 da subseção anterior.

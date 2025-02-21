@@ -1,22 +1,14 @@
-import { Body, Controller, Get, Headers, Req } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
 
-@ApiTags('Health Check')
-@Controller({})
+@Controller({
+  version: '',
+})
 export class AppController {
-  @Get()
-  helloWorld() {
-    return 'Hello World';
-  }
+  constructor(private readonly appService: AppService) {}
 
-  @Get('health-check')
-  @ApiOperation({
-    summary: 'Endpoint de Health Check',
-  })
-  @ApiOkResponse({
-    type: String,
-  })
-  healthCheck(): string {
-    return 'healthcheck';
+  @Get('healthcheck')
+  public getStatus(): boolean {
+    return this.appService.getStatus();
   }
 }

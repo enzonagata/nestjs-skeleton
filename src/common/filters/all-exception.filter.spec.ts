@@ -1,57 +1,78 @@
-import { ArgumentsHost, HttpStatus, HttpException } from '@nestjs/common';
-import { Response } from 'express';
+import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { AllExceptionsFilter } from './all-exception.filter';
 
 describe('AllExceptionsFilter', () => {
   let filter: AllExceptionsFilter;
-  let responseMock: Response;
+  let mockResponse: Response;
+  let mockRequest: Request;
+  let mockHost: ArgumentsHost;
 
   beforeEach(() => {
     filter = new AllExceptionsFilter();
-    responseMock = {
+
+    // Mock de Response
+    mockResponse = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn().mockReturnThis(),
     } as unknown as Response;
-  });
 
-  it('should be defined', () => {
-    expect(filter).toBeDefined();
-  });
+    // Mock de Request
+    mockRequest = {
+      url: '/test-url',
+      body: { key: 'value' },
+    } as unknown as Request;
 
-  it('should catch HttpException and set response status and message', () => {
-    const exception = new HttpException(
-      'Test exception message',
-      HttpStatus.BAD_REQUEST,
-    );
-    const host = {
-      switchToHttp: jest.fn(() => ({
-        getResponse: jest.fn(() => responseMock),
-      })),
+    // Mock de ArgumentsHost
+    mockHost = {
+      switchToHttp: jest.fn().mockReturnValue({
+        getResponse: jest.fn().mockReturnValue(mockResponse),
+        getRequest: jest.fn().mockReturnValue(mockRequest),
+      }),
     } as unknown as ArgumentsHost;
+  });
 
-    filter.catch(exception, host);
+  it('deve lidar corretamente com HttpException', () => {
+    const exception = new HttpException('Test error', HttpStatus.BAD_REQUEST);
 
-    expect(responseMock.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-    expect(responseMock.json).toHaveBeenCalledWith({
-      error_message: 'Test exception message',
+    filter.catch(exception, mockHost);
+
+    expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      url: mockRequest.url,
+      body: mockRequest.body,
+      error: 'Test error',
     });
   });
 
-  it('should catch non-HttpException and set response status and message', () => {
-    const exception = new Error('Test error message');
-    const host = {
-      switchToHttp: jest.fn(() => ({
-        getResponse: jest.fn(() => responseMock),
-      })),
-    } as unknown as ArgumentsHost;
+  it('deve lidar com exceções com mensagem SQL', () => {
+    const exception = {
+      sqlMessage: 'Erro de banco de dados',
+    };
 
-    filter.catch(exception, host);
+    filter.catch(exception, mockHost);
 
-    expect(responseMock.status).toHaveBeenCalledWith(
+    expect(mockResponse.status).toHaveBeenCalledWith(
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
-    expect(responseMock.json).toHaveBeenCalledWith({
-      error_message: new Error('Test error message'),
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      url: mockRequest.url,
+      body: mockRequest.body,
+      error: 'Erro de banco de dados',
+    });
+  });
+
+  it('deve lidar com exceções genéricas', () => {
+    const exception = new Error('Erro genérico');
+
+    filter.catch(exception, mockHost);
+
+    expect(mockResponse.status).toHaveBeenCalledWith(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      url: mockRequest.url,
+      body: mockRequest.body,
+      error: exception,
     });
   });
 });

@@ -1,0 +1,39 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Build"
+    args:
+      - "build"
+      - "-t"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/apps/$REPO_NAME:$SHORT_SHA"
+      - "--file=./Dockerfile"
+      - "--build-arg"
+      - "NODE_ENV=prod"
+      - "--target=prod"
+      - "."
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: "Push Image"
+    args:
+      - "push"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/apps/$REPO_NAME:$SHORT_SHA"
+
+  - name: "us-east1-docker.pkg.dev/pravaler-tools-devops/tools/cloud-builder-deployer:v3"
+    id: "Deploy"
+    args:
+      - "--project-id"
+      - "$PROJECT_ID"
+      - "--ps-app-name"
+      - "cyber-integration"
+      - "--ps-branch-name"
+      - "$BRANCH_NAME"
+      - "--ps-short-sha"
+      - "$SHORT_SHA"
+      - "--ps-deploy-type"
+      - "helm"
+      - "--ps-repo-name"
+      - "$REPO_NAME"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: "projects/$PROJECT_ID/locations/us-east1/workerPools/default"

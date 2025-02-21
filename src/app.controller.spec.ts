@@ -1,20 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 describe('AppController', () => {
-  let appController: AppController;
+  let controller: AppController;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
+      providers: [AppService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    controller = module.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "negativacao-curta"', () => {
-      expect(appController.healthCheck()).toBe('negativacao-curta');
-    });
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  it('health-check', async () => {
+    const result = await controller.getStatus();
+    expect(result).toEqual(true);
   });
 });
