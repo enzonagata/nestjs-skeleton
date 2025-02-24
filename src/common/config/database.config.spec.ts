@@ -1,79 +1,47 @@
-import { DataBaseConfig } from '../../config/database.config';
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException } from '@nestjs/common';
+import { getDatabaseConfig } from './database.config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-describe('DataBaseConfig', () => {
+jest.mock('@nestjs/config');
+
+describe('getDatabaseConfig', () => {
   let configService: ConfigService;
-  let databaseConfig: DataBaseConfig;
 
   beforeEach(() => {
-    configService = {
-      get: jest.fn((key) => {
-        switch (key) {
-          case 'DB_HOST':
-            return 'dbHost';
-          case 'DB_PORT':
-            return 5432;
-          case 'DB_DATABASE':
-            return 'dbName';
-          case 'DB_USERNAME':
-            return 'dbUser';
-          case 'DB_PASSWORD':
-            return 'dbPassword';
-          case 'DB_MONGO':
-            return 'mongoConnectionString';
-          default:
-            return undefined;
-        }
-      }),
-    } as any;
-
-    databaseConfig = new DataBaseConfig(configService);
-  });
-
-  it('should be defined', () => {
-    expect(databaseConfig).toBeDefined();
-  });
-
-  describe('createTypeOrmOptions', () => {
-    it('should return TypeOrmModuleOptions', () => {
-      const result = databaseConfig.createTypeOrmOptions();
-
-      expect(result).toEqual({
-        type: 'postgres',
-        host: 'dbHost',
-        port: 5432,
-        database: 'dbName',
-        username: 'dbUser',
-        password: 'dbPassword',
-        entities: expect.any(Array),
-        migrations: expect.any(Array),
-        synchronize: false,
-      });
-    });
-
-    it('should throw BadRequestException if any database config is missing', () => {
-      configService.get = jest.fn(() => undefined);
-
-      expect(() => databaseConfig.createTypeOrmOptions()).toThrowError(
-        BadRequestException,
-      );
+    configService = new ConfigService();
+    configService.get = jest.fn().mockImplementation((key: string) => {
+      switch (key) {
+        case 'DATABASE_HOST':
+          return 'localhost';
+        case 'DATABASE_PORT':
+          return 5432;
+        case 'DATABASE_USER':
+          return 'user';
+        case 'DATABASE_PASSWORD':
+          return 'password';
+        case 'DATABASE_NAME':
+          return 'test_db';
+        default:
+          return null;
+      }
     });
   });
 
-  describe('getConnectionMongo', () => {
-    it('should return the DB_MONGO value', () => {
-      const result = databaseConfig.getConnectionMongo();
+  it('should return the correct database configuration', async () => {
+    const config: TypeOrmModuleOptions = await getDatabaseConfig(configService);
 
-      expect(result).toBe('mongoConnectionString');
-    });
-
-    it('should throw BadRequestException if DB_MONGO is missing', () => {
-      configService.get = jest.fn(() => undefined);
-
-      expect(() => databaseConfig.getConnectionMongo()).toThrowError(
-        BadRequestException,
-      );
+    expect(config).toEqual({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'user',
+      password: 'password',
+      database: 'test_db',
+      autoLoadEntities: true,
+      synchronize: false,
+      dropSchema: false,
+      logging: false,
+      logger: 'file',
     });
   });
 });
